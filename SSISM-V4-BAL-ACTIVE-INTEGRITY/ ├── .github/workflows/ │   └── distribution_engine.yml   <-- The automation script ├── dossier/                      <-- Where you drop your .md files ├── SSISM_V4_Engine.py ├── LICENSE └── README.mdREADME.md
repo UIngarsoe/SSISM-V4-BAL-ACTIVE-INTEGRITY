@@ -60,3 +60,49 @@ class SSISM_BAL_Engine:
         
         return "BAL-ACTIVE" if phi > 0.5 else "LOCKOUT-SCAM-PROTECTION"
 print("SSISM V4.2 BAL Engine Status: ONLINE")
+name: SSISM Automated Distribution Engine
+
+on:
+  push:
+    paths:
+      - 'dossier/**'
+
+jobs:
+  verify-and-distribute:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Generate SSISM Integrity Hash
+        run: |
+          echo "### SSISM INTEGRITY LOG - $(date)" >> distribution_log.txt
+          for file in dossier/*.md; do
+            sha256sum "$file" >> distribution_log.txt
+          done
+
+      - name: Active Building - Level 4 Update
+        run: |
+          echo "Status: BAL-Active"
+          echo "Deployment: Verified for Termux Remote Access"
+
+      - name: Commit Integrity Update
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "SSISM Distribution Bot"
+          git add distribution_log.txt
+          git commit -m "System Update: New Dossier Distributed & Hashed 🦚"
+          git push
+## 📡 Automated Distribution System (ADS)
+
+The **SSISM ADS** is powered by GitHub Actions to ensure zero-latency intelligence delivery. 
+
+### The Workflow:
+1. **Ingress:** Analyst (U Ingar Soe) pushes a new `.md` dossier to the `/dossier` directory.
+2. **Verification:** The system automatically generates a **SHA-256 Integrity Seal**.
+3. **BAL-Deployment:** The file is indexed and made available for remote `curl` commands via the **SSISM V-Engine** (Termux/Mobile).
+
+### Remote Distribution Command:
+To pull the latest verified dossier into your local engine:
+```bash
+curl -L -o SSISM_Latest.md [https://raw.githubusercontent.com/UIngarsoe/SSISM-V4-BAL-ACTIVE-INTEGRITY/main/dossier/SSISM_Dossier_2026-04-23.md](https://raw.githubusercontent.com/UIngarsoe/SSISM-V4-BAL-ACTIVE-INTEGRITY/main/dossier/SSISM_Dossier_2026-04-23.md) && sha256sum SSISM_Latest.md
